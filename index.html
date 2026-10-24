@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>GradePilot — CGPA Calculator</title>
+  <meta name="description"
+    content="Calculate your GPA and CGPA, plan a target grade and track your degree class. Built for the Nigerian 5.0 scale.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <header class="top">
+    <a href="#" class="site-logo">
+      <img src="MK-LOGO1.png" alt="CGPA Calculator Logo">
+      <span>GradePilot</span>
+    </a>
+    <div class="tools">
+      <label class="sr" for="scale">Grading scale</label>
+      <select id="scale" title="Grading scale">
+        <option value="5">5.0 scale</option>
+        <option value="4">4.0 scale</option>
+      </select>
+      <button id="authBtn" class="btn primary small">Log in</button>
+      <button id="theme" class="icon" aria-label="Toggle light and dark mode" title="Toggle theme"><span
+          class="ti">☀</span></button>
+    </div>
+  </header>
+
+  <section class="hero app-page" data-page="home">
+    <div class="hero-text">
+      <h1>Know your CGPA before results come out.</h1>
+      <p>Add your courses, see your GPA update as you type, and find out what grades you need to reach the class of
+        degree you want.</p>
+      <div class="hero-cta"><a class="btn primary" href="#semesters">Start calculating</a><button id="heroSignup"
+          class="btn">Create free account</button></div>
+    </div>
+    <div class="gauge" aria-live="polite">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="trk" cx="60" cy="60" r="52" />
+        <circle id="ring" class="bar" cx="60" cy="60" r="52" />
+      </svg>
+      <div class="gv"><b id="cgpa">0.00</b><span>CGPA</span></div>
+    </div>
+    <div class="class-box">
+      <strong id="cls">Add a course to begin</strong>
+      <div class="meter"><i id="meter"></i></div>
+      <small id="next"></small>
+    </div>
+  </section>
+
+  <main>
+    <section id="semesters" class="card reveal app-page" data-page="courses">
+      <div class="head">
+        <h2>Semesters</h2><button id="addSem" class="btn primary">+ Add semester</button>
+      </div>
+      <p class="hint">Enter a course's units and either its score or its grade. Changes count instantly.</p>
+      <div id="semList"></div>
+    </section>
+
+    <div class="two app-page" data-page="plan">
+      <section class="card reveal">
+        <h2>Already have a CGPA?</h2>
+        <p class="hint">Enter your current CGPA and units completed. Everything above is added on top.</p>
+        <div class="fields">
+          <label>Current CGPA<input id="pCgpa" type="number" step="0.01" min="0" inputmode="decimal"
+              placeholder="e.g. 3.85"></label>
+          <label>Units completed<input id="pUnits" type="number" min="0" inputmode="numeric"
+              placeholder="e.g. 72"></label>
+        </div>
+      </section>
+
+      <section class="card reveal">
+        <h2>Target planner</h2>
+        <p class="hint">Find the GPA you need on your remaining units.</p>
+        <div class="fields">
+          <label>Target CGPA<input id="tCgpa" type="number" step="0.01" min="0" inputmode="decimal"
+              placeholder="e.g. 4.50"></label>
+          <label>Remaining units<input id="tUnits" type="number" min="1" inputmode="numeric"
+              placeholder="e.g. 48"></label>
+        </div>
+        <p id="tOut" class="out">Fill in both fields to see what you need.</p>
+      </section>
+    </div>
+
+    <section class="card reveal app-page" data-page="stats">
+      <h2>Your progress</h2>
+      <div class="stats">
+        <div><b id="sUnits">0</b><span>Total units</span></div>
+        <div><b id="sQp">0</b><span>Quality points</span></div>
+        <div><b id="sBest">–</b><span>Best semester</span></div>
+        <div><b id="sSems">0</b><span>Semesters</span></div>
+      </div>
+      <div class="charts">
+        <div class="cbox"><canvas id="lineChart" aria-label="GPA per semester"></canvas></div>
+        <div class="cbox"><canvas id="barChart" aria-label="Grade distribution"></canvas></div>
+      </div>
+      <div class="actions">
+        <button id="copy" class="btn">Copy summary</button>
+        <button id="print" class="btn">Print / Save as PDF</button>
+        <button id="reset" class="btn danger">Reset all</button>
+      </div>
+    </section>
+
+    <section class="app-page me-page" data-page="me">
+      <div class="me-welcome card">
+        <div class="avatar-wrap">
+          <div id="profileAvatar" class="profile-avatar">S</div><label class="avatar-upload btn" for="avatarFile">Change
+            photo</label><input id="avatarFile" type="file" accept="image/*" hidden>
+        </div>
+        <div class="me-welcome-copy">
+          <p class="eyebrow">YOUR STUDENT SPACE</p>
+          <h2 id="profileGreeting">Hello, student 👋</h2>
+          <p class="hint">Your academic life, all in one place.</p><button class="btn primary" id="editProfileBtn">Edit
+            profile</button>
+        </div>
+      </div>
+      <div class="me-grid">
+        <section class="card">
+          <div class="head">
+            <h2>Student profile</h2><span class="pill">Personal details</span>
+          </div>
+          <div class="profile-fields">
+            <label>Full name<input id="profileName" placeholder="Your full name"></label><label>University /
+              school<input id="profileSchool" placeholder="e.g. University of Benin"></label><label>Department<input
+                id="profileDepartment" placeholder="e.g. Computer Science"></label><label>Course / programme<input
+                id="profileCourse" placeholder="e.g. B.Sc. Computer Science"></label><label>Current level<select
+                id="profileLevel">
+                <option value="">Choose level</option>
+                <option>100 Level</option>
+                <option>200 Level</option>
+                <option>300 Level</option>
+                <option>400 Level</option>
+                <option>500 Level</option>
+                <option>600 Level</option>
+                <option>Other</option>
+              </select></label><label>Matric number <span class="optional">(optional)</span><input id="profileMatric"
+                placeholder="Your matric number"></label>
+          </div>
+          <div class="actions"><button class="btn primary" id="saveProfile">Save profile</button><button class="btn"
+              id="clearProfile">Clear profile</button></div>
+        </section>
+        <section class="card">
+          <h2>Academic overview</h2>
+          <p class="hint">Calculated from the courses and previous CGPA you entered.</p>
+          <div class="me-stats">
+            <div><span>Current CGPA</span><b id="meCgpa">0.00</b></div>
+            <div><span>Degree classification</span><b id="meClass">Not available</b></div>
+            <div><span>Total credit units</span><b id="meUnits">0</b></div>
+            <div><span>Best semester GPA</span><b id="meBest">–</b></div>
+          </div>
+          <div class="progress-line">
+            <div><span>Progress to target</span><b id="goalProgressText">Set a target below</b></div>
+            <div class="progress-track"><i id="goalProgress"></i></div>
+          </div>
+        </section>
+        <section class="card">
+          <h2>Academic goals</h2>
+          <p class="hint">Set a target CGPA and use the Plan tab to calculate what you need.</p><label>My target
+            CGPA<input id="profileGoal" type="number" min="0" step="0.01" placeholder="e.g. 4.50"></label>
+          <div class="actions"><button class="btn primary" id="saveGoal">Save goal</button><button class="btn"
+              id="openPlan">Open target planner</button></div>
+          <div id="achievementList" class="achievement-list"></div>
+        </section>
+        <section class="card">
+          <h2>Preferences</h2>
+          <div class="preference-row">
+            <div><b>Appearance</b><small>Choose light or dark mode</small></div><button class="btn"
+              id="prefTheme">Toggle theme</button>
+          </div>
+          <div class="preference-row">
+            <div><b>Grading scale</b><small>Used for all GPA calculations</small></div><select id="prefScale">
+              <option value="5">5.0 scale</option>
+              <option value="4">4.0 scale</option>
+            </select>
+          </div>
+          <div class="preference-row">
+            <div><b>Background & interaction animations</b><small>Floating balls, transitions and tap effects</small>
+            </div><label class="switch"><input id="animToggle" type="checkbox" checked><span></span></label>
+          </div>
+          <div class="preference-row">
+            <div><b>Semester history</b><small>Quick review of recorded semester GPAs</small></div>
+          </div>
+          <div id="semesterHistory" class="history-list"></div><button class="btn" id="resetPrefs">Reset
+            preferences</button>
+        </section>
+        <section class="card">
+          <h2>Backup & data</h2>
+          <p class="hint">Download a backup before changing devices or clearing browser data.</p>
+          <div class="actions"><button class="btn primary" id="exportData">Export backup (.json)</button><label
+              class="btn import-label" for="importFile">Import backup</label><input id="importFile" type="file"
+              accept="application/json,.json" hidden><button class="btn" id="exportCsv">Export courses (.csv)</button>
+          </div>
+          <p class="fine">Your records are stored in this browser on this device. They do not automatically sync between
+            devices.</p><button class="btn danger" id="clearAcademicData">Clear academic records</button>
+        </section>
+        <section class="card">
+          <h2>Account & privacy</h2>
+          <p class="hint" id="accountStatus">You are using the calculator as a guest.</p>
+          <div class="actions"><button class="btn primary" id="accountAction">Log in / create account</button><button
+              class="btn" id="privacyInfo">Privacy details</button></div>
+          <p class="fine">The account feature is local to this device, not an online cloud account. Avoid saving
+            sensitive information on a shared device.</p>
+        </section>
+        <section class="card">
+          <h2>About this calculator</h2>
+          <p class="hint">A student-friendly CGPA calculator for tracking grades, planning targets and reviewing
+            academic progress.</p>
+          <div class="about-facts"><span>Version <b>2.0</b></span><span>Grading <b>4.0 / 5.0</b></span><span>Storage
+              <b>On-device</b></span></div>
+          <div class="actions"><button class="btn" id="howWorks">How calculations work</button><a class="btn"
+              href="mailto:feedback@example.com?subject=CGPA%20Calculator%20Feedback">Feedback by email</a></div>
+          <div id="howDetails" hidden>
+            <ol class="how">
+              <li>Quality points = grade point × course units.</li>
+              <li>GPA = total quality points ÷ total units for that semester.</li>
+              <li>CGPA = all quality points ÷ all units across every semester.</li>
+            </ol>
+            <div id="legend" class="legend"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-tabs" aria-label="Main navigation">
+    <button class="bottom-tab active" data-go="home" aria-current="page"><span>🏠</span><small>Home</small></button>
+    <button class="bottom-tab" data-go="courses"><span>📚</span><small>Courses</small></button>
+    <button class="bottom-tab" data-go="plan"><span>🎯</span><small>Plan</small></button>git
+    <button class="bottom-tab" data-go="stats"><span>📊</span><small>Stats</small></button>
+    <button class="bottom-tab" data-go="me"><span>👤</span><small>Me</small></button>
+  </nav>
+
+  <footer>Your data stays on this device. Always confirm official results with your school.
+    <br> <a style="color: rgb(0, 89, 255);">By Mektra</a>
+    <br> <a style="color: rgb(107, 106, 106);">in collaboration with AI</a>
+  </footer>
+  <div class="sticky" aria-hidden="true"><span>CGPA</span><b id="cgpa2">0.00</b><em id="cls2"></em></div>
+  <dialog id="dlg">
+    <p>Delete every semester and reset your saved data?</p>
+    <div class="actions"><button class="btn" id="no">Cancel</button><button class="btn danger" id="yes">Yes,
+        reset</button></div>
+  </dialog>
+  <dialog id="auth" aria-labelledby="authTitle">
+    <form id="authForm" novalidate>
+      <div class="tabs" role="tablist"><button type="button" role="tab" id="tabLogin" class="on"
+          aria-selected="true">Log in</button><button type="button" role="tab" id="tabSignup"
+          aria-selected="false">Create account</button></div>
+      <h2 id="authTitle">Welcome back</h2>
+      <p class="hint" id="authSub">Log in to load your saved semesters.</p>
+      <label id="lName" hidden>Full name<input id="aName" autocomplete="name" placeholder="Your name"></label>
+      <label>Email<input id="aEmail" type="email" autocomplete="email" inputmode="email"
+          placeholder="you@example.com"></label>
+      <label>Password<input id="aPw" type="password" autocomplete="current-password"
+          placeholder="At least 8 characters"></label>
+      <label id="lConf" hidden>Confirm password<input id="aConf" type="password" autocomplete="new-password"
+          placeholder="Repeat password"></label>
+      <div class="auth-row"><label class="chk"><input type="checkbox" id="aShow"> Show password</label><label
+          class="chk"><input type="checkbox" id="aRem" checked> Keep me logged in</label></div>
+      <p id="authErr" class="autherr" role="alert"></p>
+      <button class="btn primary wide" id="authGo">Log in</button>
+      <button type="button" class="btn wide" id="guest">Continue as guest</button>
+      <small class="fine">Accounts live on this device only. There is no password reset, so keep your password
+        safe.</small>
+    </form>
+  </dialog>
+  <dialog id="acct" aria-labelledby="acName">
+    <h2 id="acName"></h2>
+    <p class="hint" id="acMail"></p>
+    <p class="fine">Your semesters are saved to this account on this device.</p>
+    <div class="actions"><button class="btn" id="logout">Log out</button><button class="btn danger" id="delAcct">Delete
+        account</button><button class="btn" id="acClose">Close</button></div>
+  </dialog>
+  <div id="toast" role="status"></div>
+  <canvas id="confetti"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
