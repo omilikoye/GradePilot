@@ -2326,28 +2326,126 @@ footer,
       display: none !important;
     }
   }
+}
 
-  .linkbtn {
-    background: none;
-    border: 0;
-    padding: 0;
-    margin: .2rem 0 .6rem;
-    color: inherit;
-    opacity: .8;
-    text-decoration: underline;
-    cursor: pointer;
-    font: inherit;
-    font-size: .9rem
+/* ---------- Forgot password + recovery code ---------- */
+.linkbtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: .2rem 0 .6rem;
+  color: inherit;
+  opacity: .8;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  font-size: .9rem
+}
+
+.reccode {
+  font: 700 1.5rem/1.2 monospace;
+  letter-spacing: .08em;
+  text-align: center;
+  padding: .9rem;
+  margin: 1rem 0;
+  border: 2px dashed currentColor;
+  border-radius: 12px;
+  user-select: all
+}
+
+/* ---------- Contact section ---------- */
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+  margin-bottom: 1rem
+}
+
+.contact h3 {
+  width: 100%;
+  margin: 0 0 .3rem;
+  font-size: 1rem;
+  color: var(--ink)
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .55rem .9rem;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: .9rem;
+  font-family: inherit;
+  background: transparent;
+  cursor: pointer
+}
+
+.contact-link:active {
+  transform: scale(.97)
+}
+
+/* ---------- Email link colors ---------- */
+.contact-email {
+  border-color: #d93025;
+  color: #d93025;
+  transition: background .2s, color .2s
+}
+
+.contact-email:hover {
+  background: #d93025;
+  color: #fff;
+  border-color: #d93025
+}
+
+[data-theme=dark] .contact-email {
+  border-color: #ff6b5e;
+  color: #ff6b5e
+}
+
+[data-theme=dark] .contact-email:hover {
+  background: #ff6b5e;
+  color: #0b1322;
+  border-color: #ff6b5e
+}
+
+/* ---------- Smoother on phones ---------- */
+@media (max-width: 760px) {
+  html {
+    scroll-behavior: auto;
   }
 
-  .reccode {
-    font: 700 1.5rem/1.2 monospace;
-    letter-spacing: .08em;
-    text-align: center;
-    padding: .9rem;
-    margin: 1rem 0;
-    border: 2px dashed currentColor;
-    border-radius: 12px;
-    user-select: all
+  .floating-orbs,
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  .top,
+  .bottom-tabs {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .top {
+    background: var(--bg);
+  }
+
+  .bottom-tabs {
+    background: var(--surf);
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .card {
+    box-shadow: none;
   }
 }

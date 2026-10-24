@@ -10,7 +10,7 @@ const POINTS = { 5: { A: 5, B: 4, C: 3, D: 2, E: 1, F: 0 }, 4: { A: 4, B: 3, C: 
 const RANGES = { A: '70–100', B: '60–69', C: '50–59', D: '45–49', E: '40–44', F: '0–39' };
 const CLASSES = [[4.5, 'First Class'], [3.5, 'Second Class Upper'], [2.4, 'Second Class Lower'], [1.5, 'Third Class'], [1, 'Pass'], [0, 'Below Pass']];
 const $ = (s, r = document) => r.querySelector(s);
-const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches || matchMedia('(max-width:760px)').matches;
 let uid = Date.now();
 const id = () => ++uid;
 
@@ -139,6 +139,7 @@ function goToPage(page) {
     if (active) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
   });
   window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  if (page === 'me') refreshMe();
 }
 document.querySelectorAll('.bottom-tab').forEach(btn => btn.addEventListener('click', () => goToPage(btn.dataset.go)));
 document.querySelectorAll('.hero-cta a[href="#semesters"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); goToPage('courses'); }));
@@ -156,6 +157,8 @@ function applyGradeColours(T) {
 }
 
 /* ---------- Update results (no re-render, keeps focus) ---------- */
+let chartTimer;
+const drawChartsSoon = () => { clearTimeout(chartTimer); chartTimer = setTimeout(drawCharts, 250); };
 let lastClass = -1, charts = {};
 function update() {
   const T = totals(), idx = T.u ? classIndex(T.cgpa) : -1;
@@ -181,7 +184,7 @@ function update() {
   $('#sUnits').textContent = T.u; $('#sQp').textContent = T.q.toFixed(1); $('#sSems').textContent = withUnits.length;
   const best = withUnits.sort((a, b) => b.st.gpa - a.st.gpa)[0];
   $('#sBest').textContent = best ? best.st.gpa.toFixed(2) : '–';
-  planner(T); drawCharts();
+  planner(T); drawChartsSoon();
 }
 function planner(T) {
   const tg = parseFloat(S.target.cgpa), ru = parseInt(S.target.units), out = $('#tOut');
@@ -428,7 +431,7 @@ $('#howWorks').onclick = () => { const d = $('#howDetails'); d.hidden = !d.hidde
 $('#avatarFile').onchange = async e => { const f = e.target.files[0]; if (!f) return; if (!f.type.startsWith('image/')) { toast('Choose an image file'); return } if (f.size > 2 * 1024 * 1024) { toast('Choose a photo smaller than 2 MB'); e.target.value = ''; return } const reader = new FileReader(); reader.onload = () => { const p = readProfile(); p.avatar = reader.result; saveProfileData(p); refreshMe(); toast('Profile photo updated') }; reader.readAsDataURL(f); e.target.value = ''; };
 // A field change is retained locally too, so an accidental tab switch does not lose profile edits.
 ['profileName', 'profileSchool', 'profileDepartment', 'profileCourse', 'profileLevel', 'profileMatric'].forEach(id => $('#' + id).addEventListener('change', storeProfileFromFields));
-const originalUpdate = update; update = function () { originalUpdate(); if ($('#meCgpa')) refreshMe(); };
+const originalUpdate = update; update = function () { originalUpdate(); if ($('#meCgpa') && document.querySelector('.me-page.page-active')) refreshMe(); };
 const originalAfterSwitch = afterSwitch; afterSwitch = function () { originalAfterSwitch(); refreshMe(); };
 // Rebuild background balls with varied sizes and quicker, gentle motion.
 (function makeOrbs() { const wrap = document.createElement('div'); wrap.className = 'floating-orbs'; wrap.setAttribute('aria-hidden', 'true'); const sizes = [14, 20, 26, 32, 40, 48, 58, 72]; for (let i = 0; i < 22; i++) { const o = document.createElement('span'); o.className = 'orb'; const size = sizes[i % sizes.length]; o.style.width = size + 'px'; o.style.height = size + 'px'; o.style.left = (3 + Math.random() * 94) + '%'; o.style.top = (4 + Math.random() * 90) + '%'; o.style.setProperty('--dur', (3.2 + Math.random() * 3.4) + 's'); o.style.setProperty('--delay', (-Math.random() * 5) + 's'); o.style.setProperty('--dx', (-35 + Math.random() * 70) + 'px'); o.style.setProperty('--dy', (-35 + Math.random() * 70) + 'px'); wrap.appendChild(o) } document.body.prepend(wrap); let enabled = true; try { enabled = localStorage.getItem('cgpa-animations') !== 'off' } catch (e) { } setAnimations(enabled); })();
