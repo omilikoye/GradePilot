@@ -264,9 +264,12 @@
           placeholder="Repeat password"></label>
       <div class="auth-row"><label class="chk"><input type="checkbox" id="aShow"> Show password</label><label
           class="chk"><input type="checkbox" id="aRem" checked> Keep me logged in</label></div>
+      <button type="button" class="linkbtn" id="forgot">Forgot password?</button>
       <p id="authErr" class="autherr" role="alert"></p>
       <button class="btn primary wide" id="authGo">Log in</button>
       <button type="button" class="btn wide" id="guest">Continue as guest</button>
+      <button type="button" class="btn wide" id="importAcct">Import account from another device</button>
+      <input type="file" id="importAcctFile" accept="application/json,.json" hidden>
       <small class="fine">Accounts live on this device only. There is no password reset, so keep your password
         safe.</small>
     </form>
@@ -275,9 +278,39 @@
     <h2 id="acName"></h2>
     <p class="hint" id="acMail"></p>
     <p class="fine">Your semesters are saved to this account on this device.</p>
-    <div class="actions"><button class="btn" id="logout">Log out</button><button class="btn danger" id="delAcct">Delete
+    <div class="actions"><button class="btn" id="logout">Log out</button><button class="btn" id="recoveryBtn">New
+        recovery code</button><button class="btn" id="exportAcct">Export account</button><button class="btn danger"
+        id="delAcct">Delete
         account</button><button class="btn" id="acClose">Close</button></div>
   </dialog>
+
+  <dialog id="resetDlg" aria-labelledby="resetTitle">
+    <form id="resetForm" novalidate>
+      <h2 id="resetTitle">Reset password</h2>
+      <p class="hint">Enter your email, the recovery code you saved when you created the account, and a new password.
+      </p>
+      <label>Email<input id="rEmail" type="email" autocomplete="email" inputmode="email"
+          placeholder="you@example.com"></label>
+      <label>Recovery code<input id="rCode" autocomplete="off" autocapitalize="characters" spellcheck="false"
+          placeholder="XXXX-XXXX-XXXX"></label>
+      <label>New password<input id="rPw" type="password" autocomplete="new-password"
+          placeholder="At least 8 characters"></label>
+      <label>Confirm new password<input id="rConf" type="password" autocomplete="new-password"
+          placeholder="Repeat password"></label>
+      <p id="resetErr" class="autherr" role="alert"></p>
+      <button class="btn primary wide">Reset password</button>
+      <button type="button" class="btn wide" id="resetCancel">Back to log in</button>
+    </form>
+  </dialog>
+  <dialog id="recDlg" aria-labelledby="recTitle">
+    <h2 id="recTitle">Save your recovery code</h2>
+    <p class="hint">This is the only way to reset your password. Screenshot it or write it down. It is shown once and
+      each code works one time.</p>
+    <p id="recCode" class="reccode"></p>
+    <div class="actions"><button class="btn" id="recCopy">Copy</button><button class="btn primary" id="recDone">I have
+        saved it</button></div>
+  </dialog>
+
   <div id="toast" role="status"></div>
   <canvas id="confetti"></canvas>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
